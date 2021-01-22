@@ -1,12 +1,15 @@
 import tensorflow as tf
-from get_data import get_data
+from get_data import get_data, get_data_MRR
 import numpy as np
 import json
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.layers.experimental import preprocessing
 
-(train_features, train_labels), (test_features, test_labels) = get_data()
+# (train_features, train_labels), (test_features, test_labels) = get_data()
+# Get only MRR Data
+(train_features, train_labels), (test_features, test_labels) = get_data_MRR()
+
 
 # Experimental Normalization Layers
 normalizer = preprocessing.Normalization()
@@ -33,14 +36,14 @@ def shallow_medium_model():
 
     return model
 
-def build_medium_model():
+def build_medium_model(output_features=2):
     model = tf.keras.Sequential([
         normalizer,
         layers.Dense(12, input_dim=4, activation='relu'),
-        layers.Dense(5, activation='relu'),
-        layers.Dense(2),
+        layers.Dense(4, activation='relu'),
+        layers.Dense(output_features, activation='linear'),
     ])
-    model.compile(optimizer=tf.keras.optimizers.Adam(0.1), loss='mean_absolute_error')
+    model.compile(optimizer=tf.keras.optimizers.Adam(0.1), loss='mean_squared_error')
 
     return model
 
